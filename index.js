@@ -80,11 +80,15 @@ auth: state,
 browser: ["Ubuntu", "Chrome", "20.0.00"]
 });
 
-if (!client.authState.creds.registered) {
-const phoneNumber = await question('please enter your WhatsApp number, starting with 62:\n> ');
-const code = await client.requestPairingCode(phoneNumber, "AROGANZZ");
-console.log(`your pairing code: ${code}`);
-}
+app.get("/api/pair", async (req, res) => {
+const { number } = req.query;
+if (!number) return res.json({ error: "parameter number diperlukan" });
+
+const { state } = await useMultiFileAuthState(`./session`);
+const client = makeWASocket({ auth: state });
+const code = await client.requestPairingCode(number, "AROGANZZ");
+res.json({ pairing_code: code });
+});
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~\\
 
