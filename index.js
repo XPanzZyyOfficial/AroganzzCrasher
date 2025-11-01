@@ -70,60 +70,12 @@ rl.question(text, resolve)
 }
 
 // ===== Pairing Endpoint =====
-app.get("/api/pair", async (req, res) => {
-try {
-const number = req.query.number;
-if (!number) return res.status(400).json({ status: false, message: "parameter 'number' diperlukan" });
-
-const { state, saveCreds } = await useMultiFileAuthState("./session");
-const { version } = await fetchLatestBaileysVersion();
-
-client = makeWASocket({
-logger: pino({ level: "silent" }),
-printQRInTerminal: false,
-browser: ["Vercel", "Chrome", "1.0.0"],
-auth: state,
-});
-
-if (!client.authState.creds.registered) {
-const code = await client.requestPairingCode(number, "AROGANZZ");
-console.log(`Pairing code untuk ${number}: ${code}`);
-res.json({ status: true, pairing_code: code });
-} else {
-res.json({ status: true, message: "Sudah terdaftar" });
-}
-
-client.ev.on("creds.update", saveCreds);
-credsLoaded = true;
-} catch (err) {
-console.error(err);
-res.status(500).json({ status: false, error: err.message });
-}
-});
-
-// ======= STATUS ENDPOINT =======
-app.get("/api/status", async (req, res) => {
-res.json({
-connected: clientReady,
-credsLoaded,
-});
-});
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~\\
 
  
 //~~~~~~~~~~~~~~~~~~~~~~~~~\\
 
-client.ev.on('connection.update', (update) => {
-const { konek } = require('./public/connection/connect')
-konek({ 
-client, 
-update, 
-clientstart,
-DisconnectReason,
-Boom
-})
-})
 
 app.get('/', (req, res) => {
 res.sendFile(path.join(__dirname, 'index.html'));
